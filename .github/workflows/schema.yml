@@ -25,7 +25,7 @@ env:
 
 jobs:
   run-script:
-    runs-on: [ self-hosted ]
+    runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v4    
