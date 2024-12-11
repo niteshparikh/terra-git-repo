@@ -1,0 +1,51 @@
+name: Snowflake schema swap
+on:
+  workflow_dispatch:
+    inputs:
+      REQUESTED_BY:
+        type: string
+        description: 'Requestor user name.'
+        required: true
+      SOURCE_OBJECT:
+        type: string
+        description: 'Source object for schema swap.'
+        required: true
+      TARGET_OBJECT:
+        type: string
+        description: 'Target object for schema swap with.'
+        required: true
+      BRANCH_NAME:
+        type: string
+        description: 'The branch to checkout for schema swap operations.'
+        required: true        
+
+env:
+  code-repo: "terra-git-repo" ### Repo that has code and files for snowflake schema swap
+  repo-path: "snowflake-schema-swap" ### Relative path under $GITHUB_WORKSPACE to place the repository        
+
+jobs:
+  run-script:
+    runs-on: [ self-hosted ]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4    
+
+      - name: checkout-workflow-files
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.code-repo }}
+          ref: ${{ inputs.BRANCH_NAME }}
+          path: ${{ env.repo-path }}
+
+      - name: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: install-pip-packages
+        run: pip install -r ${{ env.repo-path }}/.github/snowflake-schema-swap/requirements.txt
+       
+      - name: Run the Python script
+        run: |
+          python ${{ env.repo-path }}/.github/snowflake-schema-swap/test.py --requested-by "${{ inputs.REQUESTED_BY }}" --source-object "${{ inputs.SOURCE_OBJECT }}" --target-object "${{ inputs.TARGET_OBJECT }}"
