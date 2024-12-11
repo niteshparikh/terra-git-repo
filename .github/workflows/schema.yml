@@ -20,7 +20,7 @@ on:
         required: true        
 
 env:
-  code-repo: "terra-git-repo" ### Repo that has code and files for snowflake schema swap
+  code-repo: "niteshparikh/terra-git-repo" ### Repo that has code and files for snowflake schema swap
   repo-path: "snowflake-schema-swap" ### Relative path under $GITHUB_WORKSPACE to place the repository        
 
 jobs:
